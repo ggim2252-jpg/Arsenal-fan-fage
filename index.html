@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아스날 FC 25/26 시즌 메인 대시보드</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,10 90,85 10,85' fill='%23EF0107'/><polygon points='50,10 90,85 50,85' fill='%23C40005'/></svg>"
+        type="image/svg+xml">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --arsenal-red: #EF0107;
+            --arsenal-dark: #063672;
+            --gold: #9C824A;
+            --bg-dark: #121418;
+            --card-bg: #1e2128;
+            --text-light: #f5f6fa;
+            --text-muted: #8a8d9b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 헤더 섹션 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 56px;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: -2px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header h1 span {
+            color: var(--arsenal-red);
+        }
+
+        .header .season-badge {
+            background: rgba(239, 1, 7, 0.15);
+            color: var(--arsenal-red);
+            border: 1px solid rgba(239, 1, 7, 0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .header-info {
+            text-align: right;
+        }
+
+        .header-info p {
+            margin: 5px 0 0 0;
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        .header-info strong {
+            color: white;
+            font-weight: 600;
+        }
+
+        /* 1등 전광판 섹션 */
+        .hero-banner {
+            background: linear-gradient(135deg, rgba(239, 1, 7, 0.9) 0%, rgba(6, 54, 114, 0.9) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 15px 40px rgba(239, 1, 7, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 글래스모피즘 패턴 */
+        .hero-banner::after {
+            content: "1ST";
+            position: absolute;
+            right: -20px;
+            bottom: -50px;
+            font-size: 250px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.05);
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 50px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat .label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+
+        .hero-stat .value {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .hero-stat .value span {
+            font-size: 20px;
+            font-weight: 400;
+            margin-left: 5px;
+        }
+
+        .team-record {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            z-index: 1;
+        }
+
+        .team-record .total-row {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--gold);
+        }
+
+        .team-record .detail-row {
+            font-size: 15px;
+            color: #ddd;
+            display: flex;
+            gap: 20px;
+        }
+
+        .team-record .detail-row div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .team-record .detail-row strong {
+            font-size: 20px;
+            color: white;
+            margin-top: 5px;
+        }
+
+        /* 탑 플레이어 랭킹 */
+        .leaderboards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .board-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .board-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gold);
+            margin: 0 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rank-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .rank-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+        }
+
+        .rank-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank-item .player-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rank-num {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-muted);
+            width: 20px;
+        }
+
+        .rank-item:first-child .rank-num {
+            color: var(--arsenal-red);
+        }
+
+        .rank-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .rank-val {
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+        }
+
+        /* 스쿼드 그리드 */
+        .section-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 30px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title::before {
+            content: "";
+            display: inline-block;
+            width: 6px;
+            height: 24px;
+            background-color: var(--arsenal-red);
+            border-radius: 3px;
+            margin-right: 15px;
+        }
+
+        .section-title-wrap {
+            display: flex;
+            align-items: center;
+        }
+
+        .squad-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .player-link {
+            text-decoration: none;
+            color: white;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 120px;
+        }
+
+        .player-link::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--text-muted);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+            transform-origin: bottom;
+        }
+
+        .player-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            background-color: rgba(30, 33, 40, 0.9);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .player-link:hover::before {
+            transform: scaleY(1);
+        }
+
+        /* 포지션별 호버 바 색상 */
+        .player-link.link-fw:hover::before {
+            background-color: #EF0107;
+        }
+
+        .player-link.link-mf:hover::before {
+            background-color: #2ecc71;
+        }
+
+        .player-link.link-df:hover::before {
+            background-color: #3498db;
+        }
+
+        .player-link.link-gk:hover::before {
+            background-color: #f1c40f;
+        }
+
+        .p-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        /* 포지션별 로고 색상 (공격수 빨강, 미드 초록, 수비수 파랑, 키퍼 노랑) */
+        .p-icon.fw {
+            color: #EF0107;
+            background: rgba(239, 1, 7, 0.1);
+        }
+
+        .player-link:hover .p-icon.fw {
+            background: #EF0107;
+            color: white;
+            box-shadow: 0 5px 15px rgba(239, 1, 7, 0.3);
+        }
+
+        .p-icon.mf {
+            color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .player-link:hover .p-icon.mf {
+            background: #2ecc71;
+            color: white;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .p-icon.df {
+            color: #3498db;
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .player-link:hover .p-icon.df {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .p-icon.gk {
+            color: #f1c40f;
+            background: rgba(241, 196, 15, 0.1);
+        }
+
+        .player-link:hover .p-icon.gk {
+            background: #f1c40f;
+            color: white;
+            box-shadow: 0 5px 15px rgba(241, 196, 15, 0.3);
+        }
+
+        .p-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .p-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 5px 0;
+        }
+
+        .p-pos {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* 플레이스타일 요약 (사족) 추가 */
+        .p-style {
+            font-size: 13px;
+            color: #b0b4c8;
+            line-height: 1.4;
+            margin: 12px 0 0 0;
+            font-style: italic;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            padding-top: 10px;
+        }
+
+        .btn-standings {
+            display: inline-block;
+            background-color: var(--arsenal-dark);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s;
+        }
+
+        .btn-standings:hover {
+            background-color: var(--arsenal-red);
+            border-color: var(--arsenal-red);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- 메인 헤더 -->
+        <div class="header">
+            <div>
+                <div class="season-badge">25/26 PREMIER LEAGUE</div>
+                <h1 style="display: flex; align-items: center; gap: 20px;">
+                    <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                        style="filter: drop-shadow(0px 5px 10px rgba(239,1,7,0.3));">
+                        <polygon points="50,10 90,85 10,85" fill="#EF0107" />
+                        <polygon points="50,10 90,85 50,85" fill="#C40005" />
+                    </svg>
+                    <span>ARSENAL</span> SQUAD HUB
+                </h1>
+            </div>
+            <div class="header-info">
+                <p>감독 <strong>미켈 아르테타</strong></p>
+                <p>홈 구장 <strong>Emirates Stadium</strong></p>
+            </div>
+        </div>
+
+        <!-- 1등 팀 요약 배너 -->
+        <div class="hero-banner">
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="label">프리미어리그 순위</div>
+                    <div class="value">1<span>위</span></div>
+                </div>
+                <div class="hero-stat">
+                    <div class="label">승점 (Points)</div>
+                    <div class="value">70<span>pts</span></div>
+                </div>
+                <div class="hero-stat">
+                    <div class="label">득실차 (GD)</div>
+                    <div class="value">+39</div>
+                </div>
+            </div>
+
+            <div class="team-record">
+                <div class="total-row">31경기 (21승 7무 3패)</div>
+                <div class="detail-row">
+                    <div>팀 총 득점 <strong>61</strong></div>
+                    <div>팀 총 실점 <strong>22</strong></div>
+                    <div>팀 총 슈팅 <strong>412</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 팀 내부 기록 리더보드 -->
+        <div class="leaderboards">
+            <!-- 득점 -->
+            <div class="board-card">
+                <h3 class="board-title">⚽ 팀 내 득점 TOP 3</h3>
+                <ul class="rank-list">
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">1</span><span class="rank-name">빅토르 요케레스</span>
+                        </div><span class="rank-val">11</span>
+                    </li>
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">2</span><span class="rank-name">부카요 사카</span>
+                        </div><span class="rank-val">6</span>
+                    </li>
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">3</span><span class="rank-name">에베레치 에제</span>
+                        </div><span class="rank-val">6</span>
+                    </li>
+                </ul>
+            </div>
+            <!-- 도움 -->
+            <div class="board-card">
+                <h3 class="board-title">👟 팀 내 도움 TOP 3</h3>
+                <ul class="rank-list">
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">1</span><span class="rank-name">마르틴 외데고르</span>
+                        </div><span class="rank-val">5</span>
+                    </li>
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">2</span><span class="rank-name">유리엔 팀버</span>
+                        </div><span class="rank-val">5</span>
+                    </li>
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">3</span><span class="rank-name">데클런 라이스</span>
+                        </div><span class="rank-val">5</span>
+                    </li>
+                </ul>
+            </div>
+            <!-- 공격포인트 -->
+            <div class="board-card">
+                <h3 class="board-title">🔥 공격포인트 TOP 3</h3>
+                <ul class="rank-list">
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">1</span><span class="rank-name">빅토르 요케레스</span>
+                        </div><span class="rank-val">11</span>
+                    </li>
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">2</span><span class="rank-name">레안드로 트로사르</span>
+                        </div><span class="rank-val">10</span>
+                    </li>
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">3</span><span class="rank-name">부카요 사카</span>
+                        </div><span class="rank-val">9</span>
+                    </li>
+                </ul>
+            </div>
+            <!-- 경기수 -->
+            <div class="board-card">
+                <h3 class="board-title">🛡️ 출장 경기수 TOP 3</h3>
+                <ul class="rank-list">
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">1</span><span class="rank-name">다비드 라야</span>
+                        </div><span class="rank-val">31</span>
+                    </li>
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">2</span><span class="rank-name">마르틴 수비멘디</span>
+                        </div><span class="rank-val">31</span>
+                    </li>
+                    <li class="rank-item">
+                        <div class="player-box"><span class="rank-num">3</span><span class="rank-name">유리엔 팀버</span>
+                        </div><span class="rank-val">30</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 스쿼드 네비게이션 그리드 -->
+        <div class="section-title">
+            <div class="section-title-wrap">아스날 플레이어 대시보드 (23인)</div>
+            <a href="epl_standings.html" class="btn-standings">📊 프리미어리그 전체 순위표 보기</a>
+        </div>
+
+        <div class="squad-grid">
+            <!-- 공격수 -->
+            <a href="saka_stats.html" class="player-link link-fw">
+                <div class="p-icon fw">7</div>
+                <div class="p-info">
+                    <h4 class="p-name">부카요 사카</h4>
+                    <p class="p-pos">공격수</p>
+                    <p class="p-style">"아스날의 대체 불가 우측 파괴자, 우아하면서도 치명적인 드리블과 정교한 킥력을 뽐내는 우리의 스타보이"</p>
+                </div>
+            </a>
+            <a href="gyokeres_stats.html" class="player-link link-fw">
+                <div class="p-icon fw">14</div>
+                <div class="p-info">
+                    <h4 class="p-name">빅토르 요케레스</h4>
+                    <p class="p-pos">공격수</p>
+                    <p class="p-style">"압도적인 피지컬과 무자비한 골 결정력을 갖춘 상대 수비진의 악몽이자 무결점 스트라이커"</p>
+                </div>
+            </a>
+            <a href="eze_stats.html" class="player-link link-fw">
+                <div class="p-icon fw">10</div>
+                <div class="p-info">
+                    <h4 class="p-name">에베레치 에제</h4>
+                    <p class="p-pos">공격수 / 미드필더</p>
+                    <p class="p-style">"특유의 춤추는 듯한 화려한 개인기와 번뜩이는 창의성으로 굳게 닫힌 수비진을 흔드는 에이스 크랙"</p>
+                </div>
+            </a>
+            <a href="martinelli_stats.html" class="player-link link-fw">
+                <div class="p-icon fw">11</div>
+                <div class="p-info">
+                    <h4 class="p-name">가브리엘 마르티넬리</h4>
+                    <p class="p-pos">공격수</p>
+                    <p class="p-style">"수비 뒷공간을 박살 내는 폭발적인 스피드와 저돌적인 돌파력을 자랑하는 좌측면의 스피드 레이서"</p>
+                </div>
+            </a>
+            <a href="jesus_stats.html" class="player-link link-fw">
+                <div class="p-icon fw">9</div>
+                <div class="p-info">
+                    <h4 class="p-name">가브리엘 제주스</h4>
+                    <p class="p-pos">공격수</p>
+                    <p class="p-style">"쉬지 않고 전방을 누비며 공간을 창출하는 압박의 스페셜리스트이자 다재다능한 연계형 공격수"</p>
+                </div>
+            </a>
+            <a href="havertz_stats.html" class="player-link link-fw">
+                <div class="p-icon fw">29</div>
+                <div class="p-info">
+                    <h4 class="p-name">카이 하베르츠</h4>
+                    <p class="p-pos">공격수</p>
+                    <p class="p-style">"193cm의 큰 키를 활용한 뛰어난 축구 지능과 오프더볼, 중요한 순간 한방이 있는 클러치 펄스나인"</p>
+                </div>
+            </a>
+            <a href="madueke_stats.html" class="player-link link-fw">
+                <div class="p-icon fw">20</div>
+                <div class="p-info">
+                    <h4 class="p-name">노니 마두에케</h4>
+                    <p class="p-pos">공격수</p>
+                    <p class="p-style">"상대 풀백을 1:1로 집요하게 괴롭히며 직선적이고 파괴적인 움직임으로 활로를 뚫는 크랙"</p>
+                </div>
+            </a>
+            <a href="trossard_stats.html" class="player-link link-fw">
+                <div class="p-icon fw">19</div>
+                <div class="p-info">
+                    <h4 class="p-name">레안드로 트로사르</h4>
+                    <p class="p-pos">공격수 / 미드필더</p>
+                    <p class="p-style">"양발을 구별 없이 자유자재로 다루며, 필요한 순간 경기 흐름을 뒤집어버리는 치명적인 슈퍼 조커"</p>
+                </div>
+            </a>
+
+            <!-- 미드필더 -->
+            <a href="odegaard_stats.html" class="player-link link-mf">
+                <div class="p-icon mf">8</div>
+                <div class="p-info">
+                    <h4 class="p-name">마르틴 외데고르</h4>
+                    <p class="p-pos">미드필더 (팀 주장)</p>
+                    <p class="p-style">"넓은 시야와 창의적인 스루패스로 팀의 공격을 진두지휘하는 아스날의 심장이자 그라운드의 마에스트로"</p>
+                </div>
+            </a>
+            <a href="rice_stats.html" class="player-link link-mf">
+                <div class="p-icon mf">41</div>
+                <div class="p-info">
+                    <h4 class="p-name">데클런 라이스</h4>
+                    <p class="p-pos">미드필더</p>
+                    <p class="p-style">"광활한 활동량으로 중원을 쓸어 담으며 공수 양면에서 완벽한 밸런스를 자랑하는 대체 불가 철인"</p>
+                </div>
+            </a>
+            <a href="merino_stats.html" class="player-link link-mf">
+                <div class="p-icon mf">23</div>
+                <div class="p-info">
+                    <h4 class="p-name">미켈 메리노</h4>
+                    <p class="p-pos">미드필더</p>
+                    <p class="p-style">"영리한 위치 선정과 정교한 왼발 패스, 헌신적인 경합으로 팀에 안정감과 템포를 불어넣는 스페니쉬 미드필더"</p>
+                </div>
+            </a>
+            <a href="zubimendi_stats.html" class="player-link link-mf">
+                <div class="p-icon mf">36</div>
+                <div class="p-info">
+                    <h4 class="p-name">마르틴 수비멘디</h4>
+                    <p class="p-pos">미드필더</p>
+                    <p class="p-style">"침착한 볼 컨트롤과 엄청난 축구 지능으로 상대 압박을 벗어나며 후방 빌드업의 축을 담당하는 마스터키"</p>
+                </div>
+            </a>
+            <a href="lewis_skelly_stats.html" class="player-link link-mf">
+                <div class="p-icon mf">49</div>
+                <div class="p-info">
+                    <h4 class="p-name">마일스 루이스 스켈리</h4>
+                    <p class="p-pos">미드필더</p>
+                    <p class="p-style">"풀백부터 3선까지 전천후로 소화하며 탈압박과 전진 패스로 아스날의 미래를 빛내는 헤일 엔드의 보석"</p>
+                </div>
+            </a>
+            <a href="dowman_stats.html" class="player-link link-mf">
+                <div class="p-icon mf">56</div>
+                <div class="p-info">
+                    <h4 class="p-name">맥스 다우먼</h4>
+                    <p class="p-pos">미드필더</p>
+                    <p class="p-style">"어린 나이를 잊게 만들 정도의 천재성과 볼 테크닉으로 번뜩이는 공격 전개를 보여주는 역대급 원더키드"</p>
+                </div>
+            </a>
+            <a href="norgaard_stats.html" class="player-link link-mf">
+                <div class="p-icon mf">16</div>
+                <div class="p-info">
+                    <h4 class="p-name">크리스티안 뇌르고르</h4>
+                    <p class="p-pos">미드필더</p>
+                    <p class="p-style">"궂은일을 도맡으며 몸을 아끼지 않는 투지와 헌신적인 수비 커버로 중원에 활력을 불어넣는 살림꾼 투사"</p>
+                </div>
+            </a>
+
+            <!-- 수비수 -->
+            <a href="saliba_stats.html" class="player-link link-df">
+                <div class="p-icon df">2</div>
+                <div class="p-info">
+                    <h4 class="p-name">윌리암 살리바</h4>
+                    <p class="p-pos">수비수</p>
+                    <p class="p-style">"눈에 띄지 않게 상대 에이스를 지워버리는 세계 최고 수준의 수비 지능과 우아한 빌드업을 갖춘 통곡의 벽"</p>
+                </div>
+            </a>
+            <a href="gabriel_stats.html" class="player-link link-df">
+                <div class="p-icon df">6</div>
+                <div class="p-info">
+                    <h4 class="p-name">가브리엘 마갈량이스</h4>
+                    <p class="p-pos">수비수</p>
+                    <p class="p-style">"거친 몸싸움을 이겨내는 브라질산 철벽 수비와 동시에 코너킥 상황마다 골을 박아 넣는 무서운 수트라이커"</p>
+                </div>
+            </a>
+            <a href="white_stats.html" class="player-link link-df">
+                <div class="p-icon df">4</div>
+                <div class="p-info">
+                    <h4 class="p-name">벤 화이트</h4>
+                    <p class="p-pos">수비수</p>
+                    <p class="p-style">"지능적인 수비 위치 선정은 물론 절묘한 타이밍의 오버래핑으로 측면 파괴력을 더해주는 우측방의 핵심"</p>
+                </div>
+            </a>
+            <a href="timber_stats.html" class="player-link link-df">
+                <div class="p-icon df">12</div>
+                <div class="p-info">
+                    <h4 class="p-name">유리엔 팀버</h4>
+                    <p class="p-pos">수비수</p>
+                    <p class="p-style">"양발을 가리지 않고 좌우 풀백과 센터백을 거침없이 누비며, 매서운 공격 포인트까지 쓸어 담는 만능 지배자"</p>
+                </div>
+            </a>
+            <a href="calafiori_stats.html" class="player-link link-df">
+                <div class="p-icon df">33</div>
+                <div class="p-info">
+                    <h4 class="p-name">리카르도 칼라피오리</h4>
+                    <p class="p-pos">수비수</p>
+                    <p class="p-style">"부드러운 볼 컨트롤과 전진성으로 수비를 벗겨내며 공격의 물꼬를 터주는 다재다능한 이탈리아산 수비수"</p>
+                </div>
+            </a>
+            <a href="mosquera_stats.html" class="player-link link-df">
+                <div class="p-icon df">3</div>
+                <div class="p-info">
+                    <h4 class="p-name">크리스티안 모스케라</h4>
+                    <p class="p-pos">수비수</p>
+                    <p class="p-style">"압도적인 피지컬과 빠른 주력으로 공격수를 찍어 누르며 압박을 튕겨내는 정통 파이터형 센터백"</p>
+                </div>
+            </a>
+            <a href="hincapie_stats.html" class="player-link link-df">
+                <div class="p-icon df">5</div>
+                <div class="p-info">
+                    <h4 class="p-name">피에로 인카피에</h4>
+                    <p class="p-pos">수비수</p>
+                    <p class="p-style">"수비 시에는 단단함을 넘어, 과감한 슈팅과 왼발 킥력으로 좌측면 포메이션의 완성도를 높여주는 멀티 자원"</p>
+                </div>
+            </a>
+
+            <!-- 골키퍼 -->
+            <a href="raya_stats.html" class="player-link link-gk">
+                <div class="p-icon gk">1</div>
+                <div class="p-info">
+                    <h4 class="p-name">다비드 라야</h4>
+                    <p class="p-pos">골키퍼</p>
+                    <p class="p-style">"정확한 롱패스로 공격의 시발점이 되며, 중요한 순간 동물적인 반사 신경으로 골문을 잠그는 아스날의 수호신"</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

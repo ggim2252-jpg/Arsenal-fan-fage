@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>크리스티안 모스케라 (Christian Mosquera) 25/26 시즌 스탯 대시보드</title>
+    <!-- Chart.js 라이브러리 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --arsenal-red: #EF0107;
+            --arsenal-dark: #063672;
+            --gold: #9C824A;
+            --bg-dark: #121418;
+            --card-bg: #1e2128;
+            --text-light: #f5f6fa;
+            --text-muted: #8a8d9b;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 30px;
+        }
+
+        .dashboard {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+        }
+
+        /* 왼쪽: 선수 프로필 카드 */
+        .profile-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(239, 1, 7, 0.2);
+        }
+
+        .profile-card::before {
+            content: "3";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 14rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.03);
+            z-index: 0;
+            line-height: 1;
+        }
+
+        .player-info {
+            position: relative;
+            z-index: 1;
+        }
+
+        .club-badge {
+            display: inline-block;
+            background-color: var(--arsenal-red);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .player-name {
+            font-size: 26px;
+            font-weight: 800;
+            margin: 0 0 5px 0;
+            letter-spacing: -1px;
+        }
+
+        .player-name-en {
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 30px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 30px;
+        }
+
+        .info-item .label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .info-item .val {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .season-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 20px 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .season-title::before {
+            content: "";
+            display: block;
+            width: 4px;
+            height: 16px;
+            background-color: var(--arsenal-red);
+            border-radius: 2px;
+        }
+
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .stat-box .title {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .stat-box .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--arsenal-red);
+        }
+
+        .stat-box .value.gold {
+            color: var(--gold);
+        }
+
+        .stat-box .value.white {
+            color: #fff;
+        }
+
+        /* 오른쪽: 차트 영역 */
+        .charts-container {
+            display: grid;
+            grid-template-rows: repeat(2, 1fr);
+            gap: 24px;
+            height: 85vh;
+            min-height: 700px;
+        }
+
+        .chart-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .chart-wrapper {
+            flex: 1;
+            position: relative;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard">
+        <!-- 프로필 섹션 -->
+        <div class="profile-card">
+            <div class="player-info">
+                <div class="club-badge">ARSENAL FC</div>
+                <h1 class="player-name">크리스티안 모스케라</h1>
+                <p class="player-name-en">Christian Mosquera</p>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="label">출생</div>
+                        <div class="val">2004.06.27</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">국적</div>
+                        <div class="val">스페인/콜롬비아</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">신체</div>
+                        <div class="val">188cm / 78kg</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">포지션</div>
+                        <div class="val">수비수 (CB)</div>
+                    </div>
+                </div>
+
+                <div class="season-title">25/26 시즌 기록 요약</div>
+                <div class="stats-summary">
+                    <div class="stat-box">
+                        <div class="title">경기 (명단포함)</div>
+                        <div class="value white" style="font-size: 20px; margin-top:5px;">14 <span
+                                style="font-size:13px; color:#8a8d9b; font-weight:400;">(673분)</span></div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="title">공격 포인트</div>
+                        <div class="value gold">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="title">슈팅</div>
+                        <div class="value white">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="title">최다 걷어내기(1G)</div>
+                        <div class="value white">9</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 차트 섹션 -->
+        <div class="charts-container">
+            <!-- 누적 출장시간 라인 차트 -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h2 class="chart-title">시즌 누적 출장시간 흐름(분)</h2>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="cumulativeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 경기별 수비 스탯 바 차트 (슈팅 0회이므로 대체) -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h2 class="chart-title">주요 수비 지표: 경기별 걷어내기 및 인터셉트</h2>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="defensiveChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 원본 데이터 (시간 순 : 8월 -> 3월)
+        const rawData = [
+            { date: '08.18', mins: 0, goal: 0, assist: 0, intc: 0, clr: 0 },
+            { date: '08.24', mins: 26, goal: 0, assist: 0, intc: 0, clr: 0 },
+            { date: '09.01', mins: 85, goal: 0, assist: 0, intc: 0, clr: 4 },
+            { date: '09.13', mins: 90, goal: 0, assist: 0, intc: 1, clr: 6 },
+            { date: '09.22', mins: 0, goal: 0, assist: 0, intc: 0, clr: 0 },
+            { date: '09.29', mins: 45, goal: 0, assist: 0, intc: 0, clr: 3 },
+            { date: '10.04', mins: 0, goal: 0, assist: 0, intc: 0, clr: 0 },
+            { date: '10.19', mins: 0, goal: 0, assist: 0, intc: 0, clr: 0 },
+            { date: '10.26', mins: 45, goal: 0, assist: 0, intc: 0, clr: 5 },
+            { date: '11.02', mins: 0, goal: 0, assist: 0, intc: 0, clr: 0 },
+            { date: '11.09', mins: 2, goal: 0, assist: 0, intc: 0, clr: 0 },
+            { date: '11.24', mins: 2, goal: 0, assist: 0, intc: 0, clr: 0 },
+            { date: '12.01', mins: 90, goal: 0, assist: 0, intc: 0, clr: 9 },
+            { date: '12.04', mins: 43, goal: 0, assist: 0, intc: 0, clr: 5 },
+            { date: '02.13', mins: 90, goal: 0, assist: 0, intc: 0, clr: 6 },
+            { date: '02.23', mins: 34, goal: 0, assist: 0, intc: 0, clr: 1 },
+            { date: '03.05', mins: 64, goal: 0, assist: 0, intc: 0, clr: 5 },
+            { date: '03.15', mins: 53, goal: 0, assist: 0, intc: 1, clr: 2 }
+        ];
+
+        const labels = rawData.map(d => d.date);
+
+        // 공격포인트/슈팅이 0이므로 출장 시간(Mins) 누적 차트로 대체
+        let curMins = 0;
+        const cumMins = [];
+
+        rawData.forEach(d => {
+            curMins += d.mins;
+            cumMins.push(curMins);
+        });
+
+        // Chart.js 공통 옵션
+        Chart.defaults.color = '#8a8d9b';
+        Chart.defaults.font.family = "'Pretendard', sans-serif";
+
+        // 1. 누적 출장시간 차트
+        const ctx1 = document.getElementById('cumulativeChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: '누적 출장 시간(분)',
+                        data: cumMins,
+                        borderColor: '#9C824A', // 골드 라인
+                        backgroundColor: 'rgba(156, 130, 74, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'top', align: 'end', labels: { color: '#f5f6fa', boxWidth: 12 } },
+                    tooltip: {
+                        backgroundColor: 'rgba(30, 33, 40, 0.95)',
+                        titleFont: { size: 13 },
+                        bodyFont: { size: 14, weight: 'bold' },
+                        padding: 12,
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { maxTicksLimit: 15 } },
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        min: 0,
+                        ticks: { stepSize: 100 }
+                    }
+                }
+            }
+        });
+
+        // 2. 슈팅 0회이므로 수비를 잘 보여주는 Clearances(걷어내기), Interceptions(인터셉트) 차트로 세팅
+        const ctx2 = document.getElementById('defensiveChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: '걷어내기(Clearances)',
+                        data: rawData.map(d => d.clr),
+                        backgroundColor: '#4b4d58',
+                        borderRadius: 4
+                    },
+                    {
+                        label: '인터셉트',
+                        data: rawData.map(d => d.intc),
+                        backgroundColor: '#EF0107',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'top', align: 'end', labels: { color: '#f5f6fa', boxWidth: 12 } },
+                    tooltip: {
+                        backgroundColor: 'rgba(30, 33, 40, 0.95)',
+                        titleFont: { size: 13 },
+                        bodyFont: { size: 14, weight: 'bold' },
+                        padding: 12,
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: { stacked: false, grid: { display: false }, ticks: { maxTicksLimit: 15 } },
+                    y: {
+                        stacked: false,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        min: 0,
+                        max: 10, // 걷어내기 최고 9회
+                        ticks: { stepSize: 2 }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
